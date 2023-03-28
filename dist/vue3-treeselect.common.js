@@ -2032,10 +2032,10 @@ var store = __webpack_require__("c6cd");
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.28.0',
+  version: '3.29.1',
   mode: IS_PURE ? 'pure' : 'global',
   copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
-  license: 'https://github.com/zloirock/core-js/blob/v3.28.0/LICENSE',
+  license: 'https://github.com/zloirock/core-js/blob/v3.29.1/LICENSE',
   source: 'https://github.com/zloirock/core-js'
 });
 
@@ -6438,7 +6438,6 @@ var instanceId = 0;
     internalValue: function internalValue() {
       var _this = this;
       var internalValue;
-
       // istanbul ignore else
       if (this.single || this.flat || this.disableBranchNodes || this.valueConsistsOf === ALL) {
         internalValue = this.forest.selectedNodeIds.slice();
@@ -6564,6 +6563,12 @@ var instanceId = 0;
       // Vue would trigger this watcher when `newValue` and `oldValue` are shallow-equal.
       // We emit the `input` event only when the value actually changes.
       if (hasChanged) this.$emit('update:modelValue', this.getValue(), this.getInstanceId());
+    },
+    modelValue: function modelValue() {
+      // We emit the `input` event only when the value actually changes.
+      var nodeIdsFromValue = this.extractCheckedNodeIdsFromValue();
+      var hasChanged = quickDiff(nodeIdsFromValue, this.internalValue);
+      if (hasChanged) this.fixSelectedNodeIds(nodeIdsFromValue);
     },
     matchKeys: function matchKeys() {
       this.initialize();

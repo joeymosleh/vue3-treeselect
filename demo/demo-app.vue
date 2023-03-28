@@ -1,70 +1,77 @@
 <template>
 
   <div>
-    <vue-treeselect :minChar="0" :multiple="false" :async="true" :loadOptions="loadOptions" noResultsText="No results..."
-                    placeholder="Select items..."
-                    >
+      <vue-treeselect
+          :multiple="true"
+          :options="[treeData]"
+          noResultsText="No results..."
+          placeholder="Select items..."
+          v-model = "this.selected"
+          :default-expand-level="0"
+          :autoSelectDescendants="true"
+          :autoDeselectDescendants="true"
+          :searchable="false"
+          :show-count="true"
+      >
 
-    </vue-treeselect>
-    <div>
-      Selected: {{selected}}
-    </div>
+      </vue-treeselect>
+      <div>
+          Selected: {{this.selected}}
+      </div>
+
+    
   </div>
 </template>
 <script>
-import { defineComponent, ref, reactive } from 'vue';
-import { ASYNC_SEARCH } from '../dist/vue3-treeselect.common';
+import { defineComponent,ref,reactive } from 'vue';
 
 export default defineComponent({
 
-  setup() {
-    const loadOptions = ({ action, searchQuery, callback }) => {
-      if (action === ASYNC_SEARCH) {
-        setTimeout(() => {
-          const options = [1, 2, 3, 4, 5].map(i => ({
-            id: `${searchQuery}-${i}`,
-            label: `${searchQuery}-${i}`,
-          }))
-          console.log(options);
-          callback(null, options)
-        }, 2000);
-      }
-    }
-    let selected = ref([]);
-    let treeOrientation = ref("0");
-    let treeData = reactive({
-      label: 'root',
-      expand: true,
-      id: 1,
-      children: [
-        { label: 'child 1', id: 2, },
-        { label: 'child 2', id: 3, },
-        {
-          label: 'subparent 1',
-          id: 4,
-          expand: false,
-          children: [
-            { label: 'subchild 1', id: 5 },
-            {
-              label: 'subchild 2',
-              id: 6,
-              expand: false,
-              children: [
-                { label: 'subchild 11', id: 7 },
-                { label: 'subchild 22', id: 8 },
-              ]
-            },
-          ]
-        },
-      ]
-    });
-
-
+  data() {
     return {
-      treeData,
-      selected,
-      loadOptions
-    }
+      selected: []        
+    };
+  },
+
+  mounted() {
+    this.selected = [2,3]        
+  },
+ 
+  setup() {
+
+      //let selected = ref([]);
+      let treeOrientation = ref("0");
+      let treeData = reactive({
+          label: 'root',
+          expand: true,
+          id: 1,
+          children: [
+              { label: 'child 1', id: 2, },
+              { label: 'child 2', id: 3, },
+              { 
+                  label: 'subparent 1', 
+                  id: 4, 
+                  expand: false, 
+                  children: [
+                      { label: 'subchild 1', id: 5 },
+                      {  
+                          label: 'subchild 2', 
+                          id: 6, 
+                          expand: false, 
+                          children: [
+                              { label: 'subchild 11', id: 7 },
+                              { label: 'subchild 22', id: 8 },
+                          ]
+                      },
+                  ]
+              },
+          ]
+      });
+
+
+      return {
+          treeData,
+      }
   }
 })
 

@@ -713,7 +713,6 @@ export default {
      */
     internalValue() {
       let internalValue
-
       // istanbul ignore else
       if (this.single || this.flat || this.disableBranchNodes || this.valueConsistsOf === ALL) {
         internalValue = this.forest.selectedNodeIds.slice()
@@ -817,6 +816,7 @@ export default {
       return this.localSearch.active && this.flattenSearchResults
     },
     /* eslint-enable valid-jsdoc */
+
   },
 
   watch: {
@@ -824,7 +824,7 @@ export default {
       if (newValue) this.openMenu()
       else this.closeMenu()
     },
-
+   
     branchNodesFirst() {
       this.initialize()
     },
@@ -847,6 +847,13 @@ export default {
       if (hasChanged) this.$emit('update:modelValue', this.getValue(), this.getInstanceId())
     },
 
+    modelValue() {
+      // We emit the `input` event only when the value actually changes.
+      const nodeIdsFromValue = this.extractCheckedNodeIdsFromValue()
+      const hasChanged = quickDiff(nodeIdsFromValue, this.internalValue)
+      if (hasChanged) this.fixSelectedNodeIds(nodeIdsFromValue)
+    },
+    
     matchKeys() {
       this.initialize()
     },
